@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HAHAHAHAHAHAHA</title>
+<style>
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100vh; background:#07080b; color:#f5f5f5;
+    font-family:Arial,Helvetica,sans-serif; display:flex; align-items:center;
+    justify-content:center; overflow:auto; padding:20px 0;
+  }
+  .scanlines{position:fixed;inset:0;pointer-events:none;opacity:.08;
+    background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,#fff 4px)}
+  .panel{
+    width:min(900px,92vw); border:1px solid #8f122b; background:#0d0f14;
+    box-shadow:0 0 50px rgba(220,20,60,.22); padding:42px;
+    position:relative; max-height:calc(100vh - 40px); overflow:auto;
+  }
+  .top{display:flex;justify-content:space-between;align-items:center;
+    border-bottom:1px solid #3a1720;padding-bottom:18px}
+  .critical{color:#ff244f;font-weight:800;letter-spacing:3px;font-size:14px;animation:closeWarningBlink 1s infinite}
+  .timer{font-family:monospace;color:#ff244f;font-size:18px}
+  h1{font-size:clamp(42px,8vw,82px);line-height:.9;margin:42px 0 12px;
+    letter-spacing:-3px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+  h1 span{color:#ff244f}
+  .headline-text{display:block}
+  .warning-icon{color:#ffd21f;display:inline-block;flex-shrink:0;font-size:clamp(64px,12vw,120px);line-height:1;animation:warningIconBlink .8s infinite}
+  .subtitle{font-size:22px;color:#d6d7dc;margin-bottom:34px}
+  .status{
+    border-left:5px solid #ff244f;background:#151117;padding:22px 24px;
+    margin-bottom:22px
+  }
+  .status strong{display:block;color:#ff244f;font-size:18px;margin-bottom:9px}
+  .progress-wrap{background:#1a1c22;height:18px;border-radius:2px;overflow:hidden}
+  .progress{height:100%;width:7%;background:#ff244f;animation:copy 30s linear forwards}
+  @keyframes copy{to{width:100%}}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+  .item{background:#111319;border:1px solid #292c34;padding:16px}
+  .item small{color:#8e929c;display:block;margin-bottom:7px}
+  .item b{font-family:monospace;color:#eee}
+  .warning{margin-top:28px;color:#ffb5c1;font-size:14px}
+  .footer{margin-top:32px;text-align:center;color:#666b75;font-size:12px;letter-spacing:1px}
+  @media(max-width:650px){
+    body{padding:10px 0}
+    .panel{padding:25px;max-height:calc(100vh - 20px)}.grid{grid-template-columns:1fr}
+    .top{flex-direction:column;align-items:flex-start;gap:10px}
+    .timer{font-size:14px}
+    h1{font-size:40px;margin-top:28px;gap:8px}.warning-icon{font-size:58px}.subtitle{font-size:18px;margin-bottom:24px}
+  }
+
+  .do-not-close{
+    margin-top:26px;
+    padding:18px 20px;
+    background:#ff244f;
+    color:#fff;
+    border:2px solid #ff6b88;
+    box-shadow:0 0 28px rgba(255,36,79,.45);
+    text-align:center;
+    font-size:18px;
+    line-height:1.45;
+    font-weight:800;
+    letter-spacing:.6px;
+    animation:dangerPulse 1s infinite;
+  }
+  .do-not-close span{
+    font-size:14px;
+    letter-spacing:1px;
+  }
+  @keyframes dangerPulse{
+    0%,100%{box-shadow:0 0 18px rgba(255,36,79,.35)}
+    50%{box-shadow:0 0 38px rgba(255,36,79,.75)}
+  }
+  @keyframes closeWarningBlink{
+    0%,100%{opacity:1}
+    50%{opacity:.35}
+  }
+  @keyframes warningIconBlink{
+    0%,100%{opacity:1;transform:scale(1)}
+    50%{opacity:.25;transform:scale(1.15)}
+  }
+
+</style>
+</head>
+<body>
+<div class="scanlines"></div>
+<main class="panel">
+  <div class="top">
+    <div class="critical">● DO NOT ATTEMPT TO CLOSE</div>
+    <div class="timer">WINDOW CLOSES IN <span id="timer">30</span>s</div>
+  </div>
+
+  <h1><span class="headline-text">YOU'VE BEEN<br><span>COMPROMISED</span></span><span class="warning-icon" aria-hidden="true">⚠</span></h1>
+  <div class="subtitle">RITL Data is being downloaded from the SYNOLOGY system.</div>
+
+  <section class="status">
+    <strong>⚠ DOWNLOAD SUCCESSFULLY STARTED</strong>
+    <div class="progress-wrap"><div class="progress"></div></div>
+    <p id="statusText">Copying company database and sensitive files...</p>
+  </section>
+
+  <div class="grid">
+    <div class="item"><small>TRANSFER STATUS</small><b id="transfer">IN PROGRESS</b></div>
+    <div class="item"><small>DATABASE</small><b>SYNOLOGY</b></div>
+    <div class="item"><small>FILE STATUS</small><b>AT RISK</b></div>
+  </div>
+
+
+  <div class="do-not-close">
+    ⚠ <strong>DON'T CLOSE THIS WINDOW</strong><br>
+    <span>OR IT WILL DELETE ALL DATA IN SYNOLOGY</span>
+  </div>
+
+  <div class="footer" id="footerText">HAHA // THANKS // BYE</div>
+</main>
+<audio id="laughAudio" src="eddie-cayer-it-2017-pennywise-laugh.mp3" preload="auto" autoplay loop></audio>
+
+<script>
+let remaining = 30;
+const timer = document.getElementById("timer");
+const status = document.getElementById("statusText");
+const transfer = document.getElementById("transfer");
+const laughAudio = document.getElementById("laughAudio");
+
+function startLaugh() {
+  laughAudio.play().catch(() => {});
+}
+
+function stopLaugh() {
+  laughAudio.pause();
+  laughAudio.currentTime = 0;
+}
+
+startLaugh();
+
+const interval = setInterval(() => {
+  remaining--;
+  timer.textContent = remaining;
+
+  if (remaining === 20) status.textContent = "Downloading confidential folders...";
+  if (remaining === 12) status.textContent = "Preparing files for deletion...";
+  if (remaining === 6) transfer.textContent = "FINALIZING";
+  if (remaining <= 0) {
+    clearInterval(interval);
+    stopLaugh();
+    status.textContent = "DOWNLOAD COMPLETE";
+    transfer.textContent = "COMPLETED";
+    document.getElementById("footerText").textContent = "BYE / THANK YOU / WELCOME";
+    // This works when the page was opened by script; browser tabs opened directly may block it.
+    window.open("", "_self");
+    window.close();
+  }
+}, 1000);
+</script>
+</body>
+</html>
